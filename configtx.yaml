@@ -1,0 +1,384 @@
+  
+    Organizations:
+     
+        
+        - &OrdererOrg
+            
+            Name: OrdererOrg
+     
+            
+            ID: OrdererMSP
+     
+           
+            MSPDir: crypto-config/ordererOrganizations/loc.com/msp
+     
+            
+            Policies:
+                Readers:
+                    Type: Signature
+                    Rule: "OR('OrdererMSP.member')"
+                Writers:
+                    Type: Signature
+                    Rule: "OR('OrdererMSP.member')"
+                Admins:
+                    Type: Signature
+                    Rule: "OR('OrdererMSP.admin')"
+     
+        - &Intel
+            
+            Name: IntelMSP
+     
+            
+            ID: IntelMSP
+     
+            MSPDir: crypto-config/peerOrganizations/intel.loc.com/msp
+     
+            
+            Policies:
+                Readers:
+                    Type: Signature
+                    Rule: "OR('IntelMSP.admin', 'IntelMSP.peer', 'IntelMSP.client')"
+                Writers:
+                    Type: Signature
+                    Rule: "OR('IntelMSP.admin', 'IntelMSP.client')"
+                Admins:
+                    Type: Signature
+                    Rule: "OR('IntelMSP.admin')"
+     
+            
+            AnchorPeers:
+                
+                - Host: peer0.intel.loc.com
+                  Port: 7051
+     
+        - &Lenovo
+            
+            Name: LenovoMSP
+     
+            
+            ID: LenovoMSP
+     
+            MSPDir: crypto-config/peerOrganizations/lenovo.loc.com/msp
+     
+            
+            Policies:
+                Readers:
+                    Type: Signature
+                    Rule: "OR('LenovoMSP.admin', 'LenovoMSP.peer', 'LenovoMSP.client')"
+                Writers:
+                    Type: Signature
+                    Rule: "OR('LenovoMSP.admin', 'LenovoMSP.client')"
+                Admins:
+                    Type: Signature
+                    Rule: "OR('LenovoMSP.admin')"
+     
+            AnchorPeers:
+                
+                - Host: peer0.lenovo.loc.com
+                  Port: 9051
+     
+        - &FedEx
+            
+            Name: FedExMSP
+     
+           
+            ID: FedExMSP
+     
+            MSPDir: crypto-config/peerOrganizations/fedex.loc.com/msp
+     
+            
+            Policies:
+                Readers:
+                    Type: Signature
+                    Rule: "OR('FedExMSP.admin', 'FedExMSP.peer', 'FedExMSP.client')"
+                Writers:
+                    Type: Signature
+                    Rule: "OR('FedExMSP.admin', 'FedExMSP.client')"
+                Admins:
+                    Type: Signature
+                    Rule: "OR('FedExMSP.admin')"
+     
+            AnchorPeers:
+                
+                - Host: peer0.fedex.loc.com
+                  Port: 11051
+     
+        - &GovRegulator
+            
+            Name: GovRegulatorMSP
+     
+            
+            ID: GovRegulatorMSP
+     
+            MSPDir: crypto-config/peerOrganizations/govregulator.loc.com/msp
+     
+            
+            Policies:
+                Readers:
+                    Type: Signature
+                    Rule: "OR('GovRegulatorMSP.admin', 'GovRegulatorMSP.peer', 'GovRegulatorMSP.client')"
+                Writers:
+                    Type: Signature
+                    Rule: "OR('GovRegulatorMSP.admin', 'GovRegulatorMSP.client')"
+                Admins:
+                    Type: Signature
+                    Rule: "OR('GovRegulatorMSP.admin')"
+     
+            AnchorPeers:
+                
+                - Host: peer0.govregulator.loc.com
+                  Port: 13051
+   
+    Capabilities:
+       
+        Channel: &ChannelCapabilities
+            
+            V1_4_3: true
+            
+            V1_3: false
+            
+            V1_1: false
+     
+        
+        Orderer: &OrdererCapabilities
+            
+            V1_4_2: true
+            
+            V1_1: false
+     
+      
+        Application: &ApplicationCapabilities
+            
+            V1_4_2: true
+           
+            V1_3: false
+            
+            V1_2: false
+           
+            V1_1: false
+     
+
+    Application: &ApplicationDefaults
+     
+        
+        Organizations:
+     
+       
+        Policies:
+            Readers:
+                Type: ImplicitMeta
+                Rule: "ANY Readers"
+            Writers:
+                Type: ImplicitMeta
+                Rule: "ANY Writers"
+            Admins:
+                Type: ImplicitMeta
+                Rule: "MAJORITY Admins"
+     
+        Capabilities:
+            <<: *ApplicationCapabilities
+   
+    Orderer: &OrdererDefaults
+     
+        
+        OrdererType: solo
+     
+        Addresses:
+            - orderer.loc.com:7050
+     
+        
+        BatchTimeout: 2s
+     
+       
+        BatchSize:
+     
+           
+            MaxMessageCount: 10
+     
+           
+            AbsoluteMaxBytes: 99 MB
+     
+          
+            PreferredMaxBytes: 512 KB
+     
+        Kafka:
+          
+            Brokers:
+                - 127.0.0.1:9092
+     
+     
+        EtcdRaft:
+           
+            Consenters:
+                - Host: orderer.loc.com
+                  Port: 7050
+                  ClientTLSCert: crypto-config/ordererOrganizations/loc.com/orderers/orderer.loc.com/tls/server.crt
+                  ServerTLSCert: crypto-config/ordererOrganizations/loc.com/orderers/orderer.loc.com/tls/server.crt
+                - Host: orderer2.loc.com
+                  Port: 7050
+                  ClientTLSCert: crypto-config/ordererOrganizations/loc.com/orderers/orderer2.loc.com/tls/server.crt
+                  ServerTLSCert: crypto-config/ordererOrganizations/loc.com/orderers/orderer2.loc.com/tls/server.crt
+                - Host: orderer3.loc.com
+                  Port: 7050
+                  ClientTLSCert: crypto-config/ordererOrganizations/loc.com/orderers/orderer3.loc.com/tls/server.crt
+                  ServerTLSCert: crypto-config/ordererOrganizations/loc.com/orderers/orderer3.loc.com/tls/server.crt
+                - Host: orderer4.loc.com
+                  Port: 7050
+                  ClientTLSCert: crypto-config/ordererOrganizations/loc.com/orderers/orderer4.loc.com/tls/server.crt
+                  ServerTLSCert: crypto-config/ordererOrganizations/loc.com/orderers/orderer4.loc.com/tls/server.crt
+                - Host: orderer5.loc.com
+                  Port: 7050
+                  ClientTLSCert: crypto-config/ordererOrganizations/loc.com/orderers/orderer5.loc.com/tls/server.crt
+                  ServerTLSCert: crypto-config/ordererOrganizations/loc.com/orderers/orderer5.loc.com/tls/server.crt
+     
+        
+        Organizations:
+     
+       
+        Policies:
+            Readers:
+                Type: ImplicitMeta
+                Rule: "ANY Readers"
+            Writers:
+                Type: ImplicitMeta
+                Rule: "ANY Writers"
+            Admins:
+                Type: ImplicitMeta
+                Rule: "MAJORITY Admins"
+            
+            BlockValidation:
+                Type: ImplicitMeta
+                Rule: "ANY Writers"
+     
+ 
+    Channel: &ChannelDefaults
+    
+        Policies:
+           
+            Readers:
+                Type: ImplicitMeta
+                Rule: "ANY Readers"
+            
+            Writers:
+                Type: ImplicitMeta
+                Rule: "ANY Writers"
+          
+            Admins:
+                Type: ImplicitMeta
+                Rule: "MAJORITY Admins"
+     
+        
+        Capabilities:
+            <<: *ChannelCapabilities
+     
+   
+    Profiles:
+     
+        FourOrgsLoCGenesis:
+            <<: *ChannelDefaults
+            Orderer:
+                <<: *OrdererDefaults
+                Organizations:
+                    - *OrdererOrg
+                Capabilities:
+                    <<: *OrdererCapabilities
+            Consortiums:
+                LoCConsortium:
+                    Organizations:
+                        - *Intel
+                        - *Lenovo
+                        - *FedEx
+                        - *GovRegulator
+        FourOrgsLoCChannel:
+            Consortium: LoCConsortium
+            <<: *ChannelDefaults
+            Application:
+                <<: *ApplicationDefaults
+                Organizations:
+                    - *Intel
+                    - *Lenovo
+                    - *FedEx
+                    - *GovRegulator
+                Capabilities:
+                    <<: *ApplicationCapabilities
+     
+        SampleDevModeKafka:
+            <<: *ChannelDefaults
+            Capabilities:
+                <<: *ChannelCapabilities
+            Orderer:
+                <<: *OrdererDefaults
+                OrdererType: kafka
+                Kafka:
+                    Brokers:
+                    - kafka.loc.com:9092
+     
+                Organizations:
+                - *OrdererOrg
+                Capabilities:
+                    <<: *OrdererCapabilities
+            Application:
+                <<: *ApplicationDefaults
+                Organizations:
+                - <<: *OrdererOrg
+            Consortiums:
+                LoCConsortium:
+                    Organizations:
+                    - *Intel
+                    - *Lenovo
+                    - *FedEx
+                    - *GovRegulator
+     
+        SampleMultiNodeEtcdRaft:
+            <<: *ChannelDefaults
+            Capabilities:
+                <<: *ChannelCapabilities
+            Orderer:
+                <<: *OrdererDefaults
+                OrdererType: etcdraft
+                EtcdRaft:
+                    Consenters:
+                    - Host: orderer.loc.com
+                      Port: 7050
+                      ClientTLSCert: crypto-config/ordererOrganizations/loc.com/orderers/orderer.loc.com/tls/server.crt
+                      ServerTLSCert: crypto-config/ordererOrganizations/loc.com/orderers/orderer.loc.com/tls/server.crt
+                    - Host: orderer2.loc.com
+                      Port: 7050
+                      ClientTLSCert: crypto-config/ordererOrganizations/loc.com/orderers/orderer2.loc.com/tls/server.crt
+                      ServerTLSCert: crypto-config/ordererOrganizations/loc.com/orderers/orderer2.loc.com/tls/server.crt
+                    - Host: orderer3.loc.com
+                      Port: 7050
+                      ClientTLSCert: crypto-config/ordererOrganizations/loc.com/orderers/orderer3.loc.com/tls/server.crt
+                      ServerTLSCert: crypto-config/ordererOrganizations/loc.com/orderers/orderer3.loc.com/tls/server.crt
+                    - Host: orderer4.loc.com
+                      Port: 7050
+                      ClientTLSCert: crypto-config/ordererOrganizations/loc.com/orderers/orderer4.loc.com/tls/server.crt
+                      ServerTLSCert: crypto-config/ordererOrganizations/loc.com/orderers/orderer4.loc.com/tls/server.crt
+                    - Host: orderer5.loc.com
+                      Port: 7050
+                      ClientTLSCert: crypto-config/ordererOrganizations/loc.com/orderers/orderer5.loc.com/tls/server.crt
+                      ServerTLSCert: crypto-config/ordererOrganizations/loc.com/orderers/orderer5.loc.com/tls/server.crt
+                Addresses:
+                    - orderer.loc.com:7050
+                    - orderer2.loc.com:7050
+                    - orderer3.loc.com:7050
+                    - orderer4.loc.com:7050
+                    - orderer5.loc.com:7050
+     
+                Organizations:
+                - *OrdererOrg
+                Capabilities:
+                    <<: *OrdererCapabilities
+            Application:
+                <<: *ApplicationDefaults
+                Organizations:
+                - <<: *OrdererOrg
+            Consortiums:
+                LoCConsortium:
+                    Organizations:
+                    - *Intel
+                    - *Lenovo
+                    - *FedEx
+                    - *GovRegulator
+
+   
